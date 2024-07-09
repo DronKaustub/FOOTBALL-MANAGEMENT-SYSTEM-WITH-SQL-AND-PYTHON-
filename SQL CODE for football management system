@@ -1,0 +1,159 @@
+--SQL CODE TO BE RUN ON SQL server
+--CREATE DATABASE FootballManagement;
+--USE FootballManagement;
+
+CREATE TABLE Player (
+    PlayerID INT PRIMARY KEY IDENTITY(1,1),
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    DateOfBirth DATE,
+    Position VARCHAR(20),
+    Nationality VARCHAR(50)
+);
+
+CREATE TABLE Team (
+    TeamID INT PRIMARY KEY IDENTITY(1,1),
+    TeamName VARCHAR(100),
+    CoachName VARCHAR(100)
+);
+
+CREATE TABLE Match (
+    MatchID INT PRIMARY KEY IDENTITY(1,1),
+    MatchDate DATE,
+    HomeTeamID INT,
+    AwayTeamID INT,
+    HomeTeamScore INT,
+    AwayTeamScore INT,
+    FOREIGN KEY (HomeTeamID) REFERENCES Team(TeamID),
+    FOREIGN KEY (AwayTeamID) REFERENCES Team(TeamID)
+);
+
+CREATE TABLE PlayerStats (
+    StatsID INT PRIMARY KEY IDENTITY(1,1),
+    PlayerID INT,
+    MatchID INT,
+    Goals INT,
+    Assists INT,
+    YellowCards INT,
+    RedCards INT,
+    FOREIGN KEY (PlayerID) REFERENCES Player(PlayerID),
+    FOREIGN KEY (MatchID) REFERENCES Match(MatchID)
+);
+
+CREATE TABLE Tournament (
+    TournamentID INT PRIMARY KEY IDENTITY(1,1),
+    TournamentName VARCHAR(100),
+    StartDate DATE,
+    EndDate DATE
+);
+
+CREATE TABLE TournamentMatches (
+    TournamentMatchID INT PRIMARY KEY IDENTITY(1,1),
+    TournamentID INT,
+    MatchID INT,
+    FOREIGN KEY (TournamentID) REFERENCES Tournament(TournamentID),
+    FOREIGN KEY (MatchID) REFERENCES Match(MatchID)
+);
+
+CREATE TABLE Stadium (
+    StadiumID INT PRIMARY KEY IDENTITY(1,1),
+    StadiumName VARCHAR(100),
+    Location VARCHAR(100),
+    Capacity INT
+);
+
+CREATE TABLE MatchStadium (
+    MatchStadiumID INT PRIMARY KEY IDENTITY(1,1),
+    MatchID INT,
+    StadiumID INT,
+    FOREIGN KEY (MatchID) REFERENCES Match(MatchID),
+    FOREIGN KEY (StadiumID) REFERENCES Stadium(StadiumID)
+);
+
+CREATE TABLE TicketSales (
+    TicketID INT PRIMARY KEY IDENTITY(1,1),
+    MatchID INT,
+    FanName VARCHAR(100),
+    SeatNumber VARCHAR(10),
+    Price DECIMAL(10, 2),
+    FOREIGN KEY (MatchID) REFERENCES Match(MatchID)
+);
+
+-- Insert data into Player table
+INSERT INTO Player (FirstName, LastName, DateOfBirth, Position, Nationality) VALUES 
+('Lionel', 'Messi', '1987-06-24', 'Forward', 'Argentina'),
+('Cristiano', 'Ronaldo', '1985-02-05', 'Forward', 'Portugal'),
+('Kylian', 'Mbappe', '1998-12-20', 'Forward', 'France'),
+('Robert', 'Lewandowski', '1988-08-21', 'Forward', 'Poland'),
+('Kevin', 'De Bruyne', '1991-06-28', 'Midfielder', 'Belgium');
+
+-- Insert data into Team table
+INSERT INTO Team (TeamName, CoachName) VALUES 
+('FC Barcelona', 'Xavi Hernandez'),
+('Juventus', 'Massimiliano Allegri'),
+('Paris Saint-Germain', 'Mauricio Pochettino'),
+('Bayern Munich', 'Julian Nagelsmann'),
+('Manchester City', 'Pep Guardiola');
+
+-- Insert data into Match table
+INSERT INTO Match (MatchDate, HomeTeamID, AwayTeamID, HomeTeamScore, AwayTeamScore) VALUES 
+('2024-01-01', 1, 2, 3, 2),
+('2024-01-02', 3, 4, 1, 1),
+('2024-01-03', 5, 1, 2, 2),
+('2024-01-04', 2, 3, 0, 3),
+('2024-01-05', 4, 5, 1, 3);
+
+-- Insert data into PlayerStats table
+INSERT INTO PlayerStats (PlayerID, MatchID, Goals, Assists, YellowCards, RedCards) VALUES 
+(1, 1, 2, 1, 0, 0),
+(2, 1, 1, 0, 1, 0),
+(3, 2, 1, 0, 0, 0),
+(4, 2, 0, 1, 0, 0),
+(5, 3, 1, 1, 1, 0);
+
+-- Insert data into Tournament table
+INSERT INTO Tournament (TournamentName, StartDate, EndDate) VALUES 
+('Champions League', '2024-02-01', '2024-05-31'),
+('Europa League', '2024-02-01', '2024-05-31'),
+('World Cup', '2024-06-01', '2024-07-31'),
+('Copa America', '2024-06-01', '2024-07-31'),
+('Euro Cup', '2024-06-01', '2024-07-31');
+
+-- Insert data into TournamentMatches table
+INSERT INTO TournamentMatches (TournamentID, MatchID) VALUES 
+(1, 1),
+(1, 2),
+(2, 3),
+(2, 4),
+(3, 5);
+
+-- Insert data into Stadium table
+INSERT INTO Stadium (StadiumName, Location, Capacity) VALUES 
+('Camp Nou', 'Barcelona', 99354),
+('Allianz Stadium', 'Turin', 41507),
+('Parc des Princes', 'Paris', 47929),
+('Allianz Arena', 'Munich', 75000),
+('Etihad Stadium', 'Manchester', 55097);
+
+-- Insert data into MatchStadium table
+INSERT INTO MatchStadium (MatchID, StadiumID) VALUES 
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+-- Insert data into TicketSales table
+INSERT INTO TicketSales (MatchID, FanName, SeatNumber, Price) VALUES 
+(1, 'John Doe', 'A1', 100.00),
+(1, 'Jane Smith', 'A2', 100.00),
+(2, 'Alice Johnson', 'B1', 75.00),
+(2, 'Bob Brown', 'B2', 75.00),
+(3, 'Charlie Davis', 'C1', 50.00);
+
+select* from player;
+select* from team;
+select* from match;
+select* from playerstats;
+select * from player,PlayerStats where player.PlayerID=playerstats.StatsID;
+select * from player,PlayerStats where player.PlayerID=playerstats.StatsID;
